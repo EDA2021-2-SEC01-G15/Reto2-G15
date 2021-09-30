@@ -39,6 +39,17 @@ los mismos.
 
 # Construccion de modelos
 
+def newCatalog():
+    catalog={"artist":None,
+                "artworks":None,
+                "medio":None}
+    catalog["artist"]=lt.newList(datastructure='SINGLE_LINKED')
+    catalog["artworks"]=lt.newList(datastructure='SINGLE_LINKED')
+    catalog["medio"]=mp.newMap(1000,
+                                maptype="CHAINING",
+                                loadfactor=1.5,
+                                comparefunction=compareMapMedio)
+
 # Funciones para agregar informacion al catalogo
 
 # Funciones para creacion de datos
@@ -46,5 +57,15 @@ los mismos.
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+def compareMapMedio(entry,medio):
+    valentry=me.getValue(entry)
+
+    if (medio==valentry):
+        return 0
+    elif (medio>valentry):
+        return 1
+    else: 
+        return -1
+
 
 # Funciones de ordenamiento
