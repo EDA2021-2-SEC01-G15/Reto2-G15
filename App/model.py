@@ -51,11 +51,70 @@ def newCatalog():
                                 comparefunction=compareMapMedio)
 
 # Funciones para agregar informacion al catalogo
+def addArtWorks(catalog,artworks):
+    lt.addLast(catalog["artworks"], artworks)
+
+    mp.put(catalog["medio"],artworks["Medium"], artworks )
+    medios = artworks["Medium"].split(",")
+    for medio in medios:
+        addMedioAuthor(catalog, medio.strip(), artworks)
+
+
+def addMedioAuthor(catalog, id, artworks):
+    """
+    Esta función adiciona un libro a la lista de libros publicados
+    por un autor.
+    Cuando se adiciona el libro se actualiza el promedio de dicho autor
+    """
+    medios = catalog['medio']
+    existmedio = mp.contains(medios, id)
+    if existmedio:
+        entry = mp.get(medios, id)
+        medio = me.getValue(entry)
+    else:
+        medio = newArtist(id)
+        mp.put(medios, id, medio)
+    lt.addLast(medio['books'], artworks)
+    
 
 # Funciones para creacion de datos
-
+def newArtist(name):
+    """
+    Crea una nueva estructura para modelar los libros de un autor
+    y su promedio de ratings. Se crea una lista para guardar los
+    libros de dicho autor.
+    """
+    artist = {'ConstituentID': "",
+              "DisplayName": None,
+              "ArtistBio": 0,
+              "Nationality": 0,
+              "Gender": 0,
+              "BeginDate": 0,
+              "EndDate": 0,
+              "Wiki QID": 0,
+              "ULAN": 0  
+              }
+    artist['DisplayName'] = name
+    artist['ConsituentID'] = lt.newList('SINGLE_LINKED', compareMapMedio)
+    return artist
 # Funciones de consulta
+def obrasMasAntiguasPorMedio(obras):
 
+    tecnicas = lt.newList("ARRAY_LIST")
+    apoyo = {}
+    maximo = ""
+    for artwork in lt.iterator(obras):
+        if lt.isPresent(tecnicas, artwork["Medium"]) == 0:
+            lt.addLast(tecnicas, artwork["Medium"])
+            apoyo[artwork["Medium"]] = 1
+        else:
+            veces = apoyo[artwork["Medium"]]
+            apoyo[artwork["Medium"]] = veces + 1
+        if apoyo[artwork["Medium"]] > apoyo.get(maximo, -1):
+            maximo = artwork["Medium"]
+    return maximo, lt.size(tecnicas)
+
+    
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareMapMedio(entry,medio):
     valentry=me.getValue(entry)
