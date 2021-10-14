@@ -47,8 +47,15 @@ def newCatalog():
     catalog["artworks"]=lt.newList(datastructure='SINGLE_LINKED')
     catalog["medio"]=mp.newMap(1000,
                                 maptype="CHAINING",
-                                loadfactor=1.5,
+                                loadfactor=4.00,
                                 comparefunction=compareMapMedio)
+
+    catalog["nationality"] = mp.newMap(
+                                maptype="CHAINING",
+                                loadfactor=4.00,
+                                comparefunction=compareMapMedio)
+
+                                                                                                
 
 # Funciones para agregar informacion al catalogo
 def addArtWorks(catalog,artworks):
@@ -114,6 +121,17 @@ def obrasMasAntiguasPorMedio(obras):
             maximo = artwork["Medium"]
     return maximo, lt.size(tecnicas)
 
+def numeroTotalObras(artWorks):
+
+    respuesta = 0
+    for artWork in lt.iterator(artWorks["nationality"]):
+        if artWork["ConsituentID"] == artWorks["ConstituentID"]:
+            respuesta = respuesta + 1 
+
+    return respuesta
+
+
+
     
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareMapMedio(entry,medio):
@@ -128,3 +146,15 @@ def compareMapMedio(entry,medio):
 
 
 # Funciones de ordenamiento
+
+def compareYears(artist2, artist1):
+    if int(artist2['BeginDate']) < int(artist1['BeginDate']):
+        return artist2
+
+def compareDate(date1, date2):
+    if date2['DateAcquired'] < date1['DateAcquired']:
+        return date1
+    
+def comparePalabras(palabra1, palabra2):
+    if palabra2 < palabra1:
+        return palabra1
