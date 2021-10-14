@@ -43,17 +43,17 @@ def newCatalog():
     catalog={"artist":None,
                 "artworks":None,
                 "medio":None}
-    catalog["artist"]=lt.newList(datastructure='SINGLE_LINKED')
-    catalog["artworks"]=lt.newList(datastructure='SINGLE_LINKED')
-    catalog["medio"]=mp.newMap(1000,
-                                maptype="CHAINING",
-                                loadfactor=4.00,
+    catalog["artist"]=lt.newList()
+    catalog["artworks"]=lt.newList()
+    catalog["medio"]=mp.newMap(1153,
+                                maptype="PROBING",
+                                loadfactor=0.60,
                                 comparefunction=compareMapMedio)
 
-    catalog["nationality"] = mp.newMap(
-                                maptype="CHAINING",
-                                loadfactor=4.00,
-                                comparefunction=compareMapMedio)
+    catalog["nationality"] = mp.newMap(1153,
+                                maptype="PROBING",
+                                loadfactor=0.60,
+                                comparefunction=compareMapNacionality)
 
                                                                                                 
 
@@ -65,6 +65,9 @@ def addArtWorks(catalog,artworks):
     medios = artworks["Medium"].split(",")
     for medio in medios:
         addMedioAuthor(catalog, medio.strip(), artworks)
+
+def addArtist(catalog,artist):
+    lt.addLast(catalog["artist"], artist)
 
 
 def addMedioAuthor(catalog, id, artworks):
@@ -121,12 +124,12 @@ def obrasMasAntiguasPorMedio(obras):
             maximo = artwork["Medium"]
     return maximo, lt.size(tecnicas)
 
-def numeroTotalObras(artWorks):
+def numeroTotalObras(catalog, nacionality):
 
     respuesta = 0
-    for artWork in lt.iterator(artWorks["nationality"]):
-        if artWork["ConsituentID"] == artWorks["ConstituentID"]:
-            respuesta = respuesta + 1 
+    for artWork in lt.iterator(artWorks["artworks"]):
+        if artWork["Nationality"] == nacionality:
+            respuesta+=1
 
     return respuesta
 
@@ -134,16 +137,20 @@ def numeroTotalObras(artWorks):
 
     
 # Funciones utilizadas para comparar elementos dentro de una lista
-def compareMapMedio(entry,medio):
-    valentry=me.getValue(entry)
-
-    if (medio==valentry):
+def compareMapMedio(medio1,medio2):
+    if (medio1==medio2):
         return 0
-    elif (medio>valentry):
+    elif (medio1>medio2):
         return 1
     else: 
-        return -1
-
+        return 0
+def compareMapNacionality(nac1,nac2):
+    if (nac1==nac2):
+        return 0
+    elif (nac1>nac2):
+        return 1
+    else: 
+        return 0
 
 # Funciones de ordenamiento
 
